@@ -1,5 +1,5 @@
 import requests
-
+import os
 
 # https://qiita.com/5zm/items/366f10fcde5d3435b417
 
@@ -12,6 +12,9 @@ def get_stock_price(code, year):
     ATTRIBUTE = 'filename='
     filename = contentDisposition[contentDisposition.find(ATTRIBUTE) + len(ATTRIBUTE):]
     filename = filename.replace("\"", "")
+    if not os.path.exists('.\\stock_data'):
+        os.mkdir('.\\stock_data')
+    filename = '.\\stock_data' + "\\" + filename
     f = open(filename, 'w')
     f.write(response.text)
     f.close()
