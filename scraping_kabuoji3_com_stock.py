@@ -7,6 +7,8 @@ import time
 
 # ①最初に取得できる証券コードを取得する（ページ数の取得）
 # アクセスするURL(初期URL)
+from get_csv_file import get_stock_price
+
 url = "https://kabuoji3.com/stock/"
 
 # httpsの証明書検証を実行している
@@ -72,8 +74,8 @@ for page in page_list:
     table = soup.findAll("table", {"class":"stock_table"})[0]
     rows = table.findAll("tr")
 
-    if page == '2':
-        break
+    # if page == '2':
+    #     break
     
     with open("stock_page_" + page + ".csv", "w", encoding='utf-8') as file:
         writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -110,22 +112,23 @@ for param in params:
         print(param[0])
         print(param[1])
         print(param[2])
-        if param[2] == '東証1部':
-            url = 'https://kabuoji3.com/stock/' + param[0] + '/'
+        # if param[2] == '東証1部':
+        url = 'https://kabuoji3.com/stock/' + param[0] + '/'
 
-            # httpsの証明書検証を実行している
-            http = urllib3.PoolManager(
-                cert_reqs='CERT_REQUIRED',
-                ca_certs=certifi.where())
+        # httpsの証明書検証を実行している
+        http = urllib3.PoolManager(
+            cert_reqs='CERT_REQUIRED',
+            ca_certs=certifi.where())
 
-            # URLにアクセスする htmlが返ってくる
-            r = http.request('GET', url)
-            # htmlをBeautifulSoupで扱う
-            soup = BeautifulSoup(r.data, "html.parser")
-            year_list = []
-            ul = soup.find_all("a", href=re.compile("https?://[\w/:%#\$&\?\(\)~\.=\+\-]+/stock/[0-9]{4}/[0-9]{4}/"))
-            print(ul)
-            for year in ul:
-                year_list.append(year.string)
-                
-            print(year_list)
+        # URLにアクセスする htmlが返ってくる
+        r = http.request('GET', url)
+        # htmlをBeautifulSoupで扱う
+        soup = BeautifulSoup(r.data, "html.parser")
+        year_list = []
+        ul = soup.find_all("a", href=re.compile("https?://[\w/:%#\$&\?\(\)~\.=\+\-]+/stock/[0-9]{4}/[0-9]{4}/"))
+        print(ul)
+        for year in ul:
+            year_list.append(year.string)
+            get_stock_price(param[0], year)
+        print(year_list)
+        time.sleep(10)
