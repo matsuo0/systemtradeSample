@@ -3,7 +3,6 @@ from pyquery import PyQuery
 import time
 import sqlite3
 
-
 def get_brand(code):
   url = 'https://kabutan.jp/stock/?code={}'.format(code)
 

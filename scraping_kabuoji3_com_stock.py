@@ -109,26 +109,32 @@ for page in page_list:
 for param in params:
     print(param)
     if param[0].isnumeric() and len(param[0]) == 4:
-        print(param[0])
-        print(param[1])
-        print(param[2])
-        # if param[2] == '東証1部':
-        url = 'https://kabuoji3.com/stock/' + param[0] + '/'
-
-        # httpsの証明書検証を実行している
-        http = urllib3.PoolManager(
-            cert_reqs='CERT_REQUIRED',
-            ca_certs=certifi.where())
-
-        # URLにアクセスする htmlが返ってくる
-        r = http.request('GET', url)
-        # htmlをBeautifulSoupで扱う
-        soup = BeautifulSoup(r.data, "html.parser")
-        year_list = []
-        ul = soup.find_all("a", href=re.compile("https?://[\w/:%#\$&\?\(\)~\.=\+\-]+/stock/[0-9]{4}/[0-9]{4}/"))
-        print(ul)
-        for year in ul:
-            year_list.append(year.string)
-            get_stock_price(param[0], year)
-        print(year_list)
-        time.sleep(10)
+        if int(param[0]) > 4044:
+            print(param[0])  # 証券コード
+            print(param[1])  # 名称
+            print(param[2])  # 市場
+            # if param[2] == '東証1部':
+            url = 'https://kabuoji3.com/stock/' + param[0] + '/'
+    
+            # httpsの証明書検証を実行している
+            http = urllib3.PoolManager(
+                cert_reqs='CERT_REQUIRED',
+                ca_certs=certifi.where())
+            time.sleep(10)
+    
+            # URLにアクセスする htmlが返ってくる
+            r = http.request('GET', url)
+            
+            # htmlをBeautifulSoupで扱う
+            soup = BeautifulSoup(r.data, "html.parser")
+            
+            year_list = []
+            ul = soup.find_all("a", href=re.compile("https?://[\w/:%#\$&\?\(\)~\.=\+\-]+/stock/[0-9]{4}/[0-9]{4}/"))
+            print(ul)
+            for year in ul:
+                year_list.append(year.string)
+                get_stock_price(param[0], year)
+            print(year_list)
+            time.sleep(10)
+            
+            
